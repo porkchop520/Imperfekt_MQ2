@@ -432,9 +432,9 @@ SUB check_Nukes
           /goto :skipCast
         }
       }
-      |only cast if my aggro is greater than PctAggro and the target is a Named
+      |only cast if my aggro is greater than PctAggro
       /if (${Nukes2D[${castIndex},${iPctAggro}]} > 0) {
-        /if (${Me.PctAggro} < ${Nukes2D[${castIndex},${iPctAggro}]} || !${Target.Named}) {
+        /if (${Me.PctAggro} < ${Nukes2D[${castIndex},${iPctAggro}]}) {
           /if (${Debug} || ${Debug_Assists}) /echo \ay skipping cast of ${Nukes2D[${castIndex},${iCastName}]}, my aggro ${Me.PctAggro} is < PctAggro ${Nukes2D[${castIndex},${iPctAggro}]}
           /if (${Debug} || ${Debug_Assists}) /echo ${Nukes2D[${castIndex},${iPctAggro}]} ${Me.PctAggro} < ${Nukes2D[${castIndex},${iPctAggro}]} !${Target.Named}
           /goto :skipCast
