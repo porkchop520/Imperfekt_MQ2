@@ -1,0 +1,15 @@
+sub Main
+  :loop
+    /if (${Me.PctMana} < 10) {
+      /sit
+      :pauseForMana
+      /delay 15s
+      /if (${Me.PctMana} > 95) /goto :loop
+      /goto :pauseForMana
+    }
+      /target id ${Me.ID}
+        /cast 1
+        /delay 20s ${Me.SpellReady[1]}
+    /if (${Cursor.Name.Equal[Summoned: Hammer of Wrath]} || ${Cursor.Name.Equal[Summoned: Halo of Light]} || ${Cursor.Name.Equal[Summoned: Black Bread]} || ${Cursor.Name.Equal[Summoned: Globe of Water]} || ${Cursor.Name.Equal[Summoned: Coldlight]} || ${Cursor.Name.Equal[Summoned: Light Globe]} || ${Cursor.Name.Equal[Summoned: Firefly Globe]}) /destroy
+  /goto :loop
+/return

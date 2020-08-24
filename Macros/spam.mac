@@ -1,0 +1,10 @@
+#turbo
+
+Sub Main
+
+    :loop
+    /click left
+    /goto :loop
+
+/return
+ 

@@ -1,0 +1,12 @@
+#turbo
+
+Sub Main
+
+:MainLoop
+/doability 1
+/delay 4s
+/autoinventory
+/goto :Mainloop
+
+/return
+ 

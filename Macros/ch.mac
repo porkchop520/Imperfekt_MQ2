@@ -1,0 +1,16 @@
+#turbo
+Sub Main
+	/if (!${Me.Gem[Complete Heal]}) /memorize "Complete Heal" 1
+	:Loop
+	/if (!${Me.SpellReady[Complete Heal]}) {
+		/delay 5
+		/goto :Loop
+	} else {
+		/rsay ${Time} Casting CH on ${Target.CleanName} 
+		/casting "Complete Heal"
+		/delay 10s !${Me.Casting.ID}
+		/delay 30
+		/if (${Bool[${Me.Buff[Yaulp VII]}]}) /casting "Yaulp VII"
+		/goto :Loop
+	}
+/return

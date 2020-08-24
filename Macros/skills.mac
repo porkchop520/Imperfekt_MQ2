@@ -1,0 +1,15 @@
+#turbo
+
+Sub Main
+
+    :loop
+    /keypress 1
+    /keypress 2
+    /keypress 3
+    /sit
+    /stand
+    /autoinventory
+    /goto :loop
+
+/return
+ 

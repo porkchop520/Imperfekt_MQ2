@@ -1,0 +1,188 @@
+Code:
+|**
+----------------------------
+CH2.mac updated version 10.01.2017
+----------------------------
+This macro will run a chchain on clerics/druid/shaman.
+It can run multiple chchains at once
+
+   
+Usage: /mac ch2
+           /bc command   chainID   tankName    tankTwo     delay   comma separated list of healers
+Start Chain1: /bc chstart   1       Xiris       Xiria    15       Xirael,Xinshia,Xanshia,Xenshia
+             
+Start Chain2: /bc chstart 2 tankName tankTwo delay cleric1,cleric2,...clericN
+
+Stop  Chain:  /bc chstop 1
+______________________________________________
+REVISION HISTORY
+    03.04.2015   xiris   INITIAL REVISION
+   10.01.2017  xiris   Random code clean up
+______________________________________________
+REQUIRED PLUGINS
+    mq2cast
+    mq2eqbc
+    mq2moveutils
+
+______________________________________________
+REQUIRED INCLUDES
+   spell_routines.inc
+**|
+
+
+#include spell_routines.inc
+
+#Event BC      "<#1#> #2#"
+
+#turbo 20
+
+
+Sub Main
+   /declare bln_useCAMP          bool   outer FALSE
+   /declare bln_BURNMode          bool    outer FALSE
+   /declare int_campX             int    outer ${Me.X}
+   /declare int_campY             int    outer ${Me.Y}
+   /declare int_campZ             int    outer ${Me.Z}
+   /declare zoneID             int    outer ${Zone.ID}
+   /echo defining
+   /if (!${Defined[bln_chChainMember]}) /declare bln_chChainMember bool outer FALSE
+   
+   /declare inkRunning   bool   outer FALSE
+   
+        |-- default values for chainID, tanks and delay allow you to not have to pass in vars on invocation
+        |    if you only have a setup that has no variations per use.
+   /declare command    string   outer NULL
+   /declare chainID   int         outer 1       
+   /declare tankOne   string    outer "Xiris"
+   /declare tankTwo   string   outer "Xira"
+   /declare delay      int      outer 20
+   /declare order      string   outer NULL
+   /declare str_classArchetype string outer PRIEST
+   
+   /declare active      bool   outer FALSE
+   /declare position   int      outer 1
+   
+   /declare chSpell    string outer
+   /if (${Me.Class.Name.Equal[Cleric]}) /varset chSpell Complete Heal
+    /if (${Me.Class.Name.Equal[Druid]})  /varset chSpell Karana's Renewal
+    /if (${Me.Class.Name.Equal[Shaman]}) /varset chSpell Kragg's Mending
+
+   
+   
+   :loop
+      /doevents
+      /delay 5
+      /call chkPosition
+   /goto :loop
+
+/return
+
+Sub chkPosition
+   /if (${Zone.ID} != ${zoneID}) /return
+   /if (${Me.Casting.ID}) /return
+   /if (!${bln_useCAMP})  /return
+   /declare campDist int local
+   /varcalc campDist ${Math.Distance[${Me.Y},${Me.X}:${int_campY},${int_campX}]}
+   /if (${campDist}>10) {
+      /moveto ${int_campY} ${int_campX} ${int_campZ}
+      /return
+   }
+/return
+
+Sub Event_BC(ChatType,Sender,ChatText)
+
+   |/echo event BC [${ChatText}]
+   /varset command   ${ChatText.Arg[1]}
+   
+   |-------------------------------
+   /if (${command.Equal[chstart]}) {
+      |-- check to see if this chstart applies to me
+      /call chkInclusion ${ChatText.Arg[6]}
+      |-- check returned true, set the session vars
+      
+      /if (${Macro.Return}) {
+         /varset chainID ${ChatText.Arg[2]}
+         /varset tankOne ${ChatText.Arg[3]}
+         /varset tankTwo ${ChatText.Arg[4]}
+         /varset delay   ${ChatText.Arg[5]}
+         /varset order    ${ChatText.Arg[6]}
+         /varset bln_chChainMember TRUE
+         /call chcStart
+      }
+         
+   }
+   |-------------------------------
+   /if (${command.Equal[chstop]}) {
+      |-- check to see if this chstop applies to me
+      /echo chstop called ${ChatText.Arg[2]} == ${chainID}
+      /if (${ChatText.Arg[2]} == ${chainID}) /call chcstop
+   }
+/return
+
+|--------------------------------------------------------------------------------
+|SUB: chkInclusion - Used to see if this CHStart command is applicable to me
+|--------------------------------------------------------------------------------
+Sub chkInclusion(OrderList)
+   /declare included bool local FALSE
+   /declare len int local ${Math.Calc[${OrderList.Count[,]}+1]}
+   /declare x int local
+   /for x 1 to ${len}
+      /if (${OrderList.Arg[${x},,].Equal[${Me.CleanName}]}) {
+         /varset included TRUE
+         /varset position ${Math.Calc[${x}-1]}
+      }
+   /next x
+/return ${included}
+
+|--------------------------------------------------------------------------------
+|SUB: chcStart - CH Chain should start up based on my inclusion in the order list.
+|--------------------------------------------------------------------------------
+Sub chcStart
+   /doevents flush
+   /echo chcStart
+   /varset active TRUE
+   
+   |-- how long should I wait before starting my chain twist?
+   /declare startDelay int local ${Math.Calc[${delay}*${position}]}
+   /delay ${startDelay}
+   /call chcTwist
+/return
+
+Sub chcTwist
+   :Loop
+      /if (!${active}) /return
+      /if (!${Spawn[pc ${tankOne}].PctHPs} && !${tankOne.Equal[${tankTwo}]}) {
+         /varset tankOne ${tankTwo}
+      }
+      /if (!${Spawn[pc ${tankOne}].PctHPs}) {
+         /echo CHChain ${chainID} Cannot Find Tank of Last Resort ${tankTwo}
+         /delay 1s
+         /return
+      }
+      /if (${Me.CurrentMana} < ${Math.Calc[${Spell[${chSpell}].Mana}+20]}) {
+         /echo CHChain ${chainID} OOM
+      }
+      
+      /if (${Spawn[pc ${CHealTank}].Distance} > ${Spell[${CHealSpell}].Range}) {
+         /echo CHChain ${chainID} ${tankOne} OOR!
+      }
+      
+      /target ${Spawn[pc ${tankOne}].CleanName}
+      /delay 2s ${Target.CleanName.Equal[${tankOne}]}
+      /delay 20s ${Me.SpellReady[${chSpell}]}
+       /bc [${chainID}]:[${position}] CHC->${tankOne} hp:${Target.PctHPs} d:${Target.Distance}
+      /delay ${delay}
+      /call Cast "${chSpell}" gem3 5s chcEvents
+      /doevents
+   /goto :Loop
+/return
+
+Sub chcStop
+   /echo killing chchain
+   /if (!${active}) /return
+   /varset active FALSE
+/return
+
+Sub chcEvents
+   /doevents
+/return
