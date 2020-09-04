@@ -1542,7 +1542,19 @@ Sub basics_Setup
 /if (${Debug} || ${Debug_Basics}) /echo <== basics_Setup -|
 /return
 
-
+SUB check_Forage
+/if (${Debug}) /echo |- check_Forage ==>
+    /if (!${Defined[ForageOn]}) /declare ForageOn string outer ${Select[${Ini[${Character_Ini},Misc,AutoForage]}, On]}
+    /if (${Me.AbilityReady[Forage]} && ${ForageOn} && !${Assisting}) {
+            /doability forage
+            /delay 2s ${Cursor.ID}
+                /while (${Cursor.ID}) {
+                    /call ClearCursor
+                    /delay 1s
+                }
+    }
+/if (${Debug}) /echo <== check_Forage -|
+/RETURN
 
 Sub basics_Background_Events
 	/doevents Follow
