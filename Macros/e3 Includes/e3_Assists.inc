@@ -132,6 +132,7 @@ SUB AssistOff
   /if (${use_FULLBurns})           /varset use_FULLBurns FALSE
   /if (${use_LONGBurns})           /varset use_LONGBurns FALSE
   /if (${use_QUICKBurns})          /varset use_QUICKBurns FALSE
+    /if (${use_NORMALBurns})          /varset use_NORMALBurns FALSE
 	/if (${use_EPICBurns})           /varset use_EPICBurns FALSE
 
   /if (${Defined[${resistCount}]}) /deletevar ${resistCount}
@@ -402,7 +403,7 @@ SUB check_Nukes
       }
       |if im burning and /noburn is set, skip the spell
       |if noburn and rotate is defined, then skip this spell and set lastSuccessfulCast to this spell, so the next spell can be used
-      /if ((${use_QUICKBurns} || ${use_LONGBurns} || ${use_FULLBurns}) && ${Nukes2D[${castIndex},${iNoBurn}]}) {
+		/if ((${use_QUICKBurns} || ${use_NORMALBurns} || ${use_LONGBurns} || ${use_FULLBurns}) && ${Nukes2D[${castIndex},${iNoBurn}]}) {
         /if (${Nukes2D[${castIndex},${iRotate}]} && ${Nukes2D.Size[1]} > 1) {
           /if (${Debug} || ${Debug_Assists}) /echo setting lastSuccessfulCast to ${lastSuccessfulCast} because noburn and rotate defined
           /varset lastSuccessfulCast ${Nukes2D[${castIndex},${iCastName}]}
@@ -443,7 +444,7 @@ SUB check_Nukes
 
       | if i have spell damage reduction recourse and the mob has more than 25% health or i have < 10% mana, skip cast.  cast anyway if i have GoM to avoid losing it
       /if (${Me.Buff[Weave of Weakness].ID} || ${Me.Buff[Flames of Weakness].ID}) {
-        /if ((${Target.PctHPs} > 25 || ${Me.PctMana} < 10) && !${Bool[${Me.Song[Gift of Mana].ID}]} && !${use_QUICKBurns} && !${use_LONGBurns} && !${use_FULLBurns}) {
+        /if ((${Target.PctHPs} > 25 || ${Me.PctMana} < 10) && !${Bool[${Me.Song[Gift of Mana].ID}]} && !${use_QUICKBurns} && !${use_NORMALBurns} && !${use_LONGBurns} && !${use_FULLBurns}) {
           /if (${Debug} || ${Debug_Assists}) /echo \ay skipping cast of ${Nukes2D[${castIndex},${iCastName}]}, i have spell damage reduction
           /goto :skipCast
         }
@@ -940,6 +941,7 @@ SUB check_Burns
     /if (${use_FULLBurns})  /call useBurns "FULLBurns2D"
     /if (${use_LONGBurns})  /call useBurns "LONGBurns2D"
     /if (${use_QUICKBurns}) /call useBurns "QUICKBurns2D"
+	/if (${use_NORMALBurns}) /call useBurns "NORMALBurns2D"	
     /if (${use_EPICBurns})  /call useBurns "EPICBurns2D"
   }
 /RETURN
@@ -1219,6 +1221,7 @@ Sub assist_Setup
   /declare use_FULLBurns bool outer FALSE
   /declare use_LONGBurns bool outer FALSE
   /declare use_QUICKBurns bool outer FALSE
+  /declare use_NORMALBurns bool outer FALSE  
   /declare use_EPICBurns bool outer FALSE
 
   /declare resistCount string outer
@@ -1305,6 +1308,7 @@ SUB assist_SpellArrays
   /call IniToArrayV "${Character_Ini},TargetAE,TargetAE#"               TargetAE_Spells
   /call IniToArrayV "${Character_Ini},PBAE,PBAE#"                       PBAE_Spells
   /call IniToArrayV "${Character_Ini},Burn,Quick Burn#"                 QUICKBurns
+  /call IniToArrayV "${Character_Ini},Burn,Normal Burn#"                NORMALBurns  
   /call IniToArrayV "${Character_Ini},Burn,Long Burn#"                  LONGBurns
   /call IniToArrayV "${Character_Ini},Burn,Full Burn#"                  FULLBurns
 
@@ -1341,6 +1345,7 @@ SUB assist_SpellArrays
   /if (${Defined[Command_DoTs]})	    /call BuildSpellArray "Command_DoTs" 	    "Command_DoTs2D"
   /if (${Defined[EPICBurns]})         /call BuildSpellArray "EPICBurns" 	      "EPICBurns2D"
   /if (${Defined[QUICKBurns]})	      /call BuildSpellArray "QUICKBurns" 	      "QUICKBurns2D"
+  /if (${Defined[NORMALBurns]})	      /call BuildSpellArray "NORMALBurns" 	      "NORMALBurns2D"  
   /if (${Defined[LONGBurns]})	        /call BuildSpellArray "LONGBurns" 	      "LONGBurns2D"
   /if (${Defined[FULLBurns]})	        /call BuildSpellArray "FULLBurns" 	      "FULLBurns2D"
   /if (${Defined[swarmPets]})	        /call BuildSpellArray "swarmPets" 	      "swarmPets2D"
@@ -1438,6 +1443,7 @@ SUB assist_CharacterSettings
 	| Burn entries.
 	/if (!${Ini[${Character_Ini},Burn].Length}) {
 		/call WriteToIni "${Character_Ini},Burn,Quick Burn"
+		/call WriteToIni "${Character_Ini},Burn,Normal Burn"		
     /call WriteToIni "${Character_Ini},Burn,Long Burn"
 		/call WriteToIni "${Character_Ini},Burn,Full Burn"
 	}
@@ -1467,6 +1473,7 @@ Sub assist_Aliases
   /noparse /squelch /alias /SwarmPets /bc Swarm pets on ${Target.ID}
 	/squelch /alias /EpicBurns /bc Epic burn
 	/squelch /alias /QuickBurns /bc Quick burn
+	/squelch /alias /NORMALBurns /bc Normal burn	
   /squelch /alias /LongBurns /bc Long burn
 	/squelch /alias /FullBurns /bc Full burn
 	/squelch /alias /taunton /varset doTaunt 1
