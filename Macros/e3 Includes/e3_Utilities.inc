@@ -229,6 +229,7 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 		/varset SpellProp[36] Zone
     /varset SpellProp[37] MinSick
     /varset SpellProp[38] Ifs
+	/varset SpellProp[39] iMaxAggro
 	}
 
   /if (${Defined[${NewArrayName}]}) /deletevar ${NewArrayName}
@@ -274,6 +275,7 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 	/if (!${Defined[iZone]})		/declare iZone int outer 36
   /if (!${Defined[iMinSick]})		/declare iMinSick int outer 37
   /if (!${Defined[iIfs]})		/declare iIfs int outer 38
+  /if (!${Defined[iMaxAggro]})          /declare iMaxAggro int outer 39
   
 	/declare i int local
 	/declare printAll bool local FALSE
@@ -657,6 +659,15 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
         /varset ${NewArrayName}[${i},${iIfs}] TRUE
         /if (${printAll}) /echo Ifs TRUE
     }
+	| get iMaxAggro
+    /if (${${ArrayName}[${i}].Find[/MaxAggro|]}) {
+      /call argueString MaxAggro| "${${ArrayName}[${i}]}"
+      /varset ${NewArrayName}[${i},${iMaxAggro}] ${c_argueString}
+    } else {
+      |default MaxAggro to 200, cast even when having aggro
+      /varset   ${NewArrayName}[${i},${iMaxAggro}] 200
+    }
+    /if (${printAll}) /echo MaxAggro ${${NewArrayName}[${i},${iMaxAggro}]}
     |default casting while invis to 0 which impies no casting while invis
     /varset	${NewArrayName}[${i},${iCastInvis}] 0
 		/if (${printAll}) /echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -441,6 +441,15 @@ SUB check_Nukes
           /goto :skipCast
         }
       }
+	  
+	  |only cast if my aggro is less than MaxAggro, else skip the spell
+      /if (${Nukes2D[${castIndex},${iMaxAggro}]}) {
+        /if (${Me.PctAggro} > ${Nukes2D[${castIndex},${iMaxAggro}]}) {
+          /if (${Debug} || ${Debug_Assists}) /echo \ay skipping cast of ${Nukes2D[${castIndex},${iCastName}]}, my aggro ${Me.PctAggro} is > MaxAggro ${Nukes2D[${castIndex},${iMaxAggro}]}
+          /if (${Debug} || ${Debug_Assists}) /echo ${Nukes2D[${castIndex},${iMaxAggro}]} ${Me.PctAggro} < ${Nukes2D[${castIndex},${iMaxAggro}]}
+          /goto :skipCast
+        }
+      }
 
       | if i have spell damage reduction recourse and the mob has more than 25% health or i have < 10% mana, skip cast.  cast anyway if i have GoM to avoid losing it
       /if (${Me.Buff[Weave of Weakness].ID} || ${Me.Buff[Flames of Weakness].ID}) {
