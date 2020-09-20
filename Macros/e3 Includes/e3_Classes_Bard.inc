@@ -218,12 +218,23 @@ sub check_bard_mez
   /if (${Debug}) /echo <== check_Mez -|
 /return
 |--------------------------------------------------------------|
+
+| Automatically cast Selo's Sonata whenever the buff is missing on the Bard
+SUB autoSonata
+  /if (${autoSonataOn} && !${Me.Buff[Selo's Sonata].ID} && ${Me.AltAbilityReady[Selo's Sonata]}) {
+    /alt act 3704
+  }
+/RETURN
+
+|--------------------------------------------------------------|
+
 Sub BRD_Setup
 /if (${Debug}) /echo |- BRD_Setup ==>
 	/call iniToVarV "${Character_Ini},Bard,Auto-Melody" autoMelody string outer
   /call iniToVarV "${Character_Ini},Bard,AutoMez (On/Off)" autoMez bool outer
   /call IniToArrayV "${Character_Ini},Bard,Mez#"	  mezArray
   /call IniToArrayV "${Character_Ini},Bard,Charm#"	charmArray
+  /call iniToVarV "${Character_Ini},Bard,Auto-Sonata (On/Off)" autoSonataOn bool outer
   /declare returnTwist		bool outer FALSE
   /declare playingMelody	bool outer TRUE
   /declare songSet string outer
@@ -254,6 +265,7 @@ Sub BRD_Background_Events
   /doevents toggleMez
   /doevents charmOn
   /doevents charmOff
+  /call autoSonata
 /return
 |--------------------------------------------------------------|
 SUB BRD_MacroSettings
@@ -267,6 +279,7 @@ SUB BRD_CharacterSettings
   /call WriteToIni "${Character_Ini},Bard,AutoMez (On/Off)" Off
   /call WriteToIni "${Character_Ini},Bard,Mez"
   /call WriteToIni "${Character_Ini},Bard,Charm"
+  /call WriteToIni "${Character_Ini},Bard,Auto-Sonata (On/Off)" Off
 /RETURN
 |--------------------------------------------------------------|
 Sub BRD_Aliases
