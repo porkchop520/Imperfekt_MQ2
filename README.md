@@ -7,7 +7,13 @@ Initial codebase commit includes the following enhancements/fixes:
 
 ## Custom Functionality
 ### Bard Auto Sonata
-Auto-Sonata allows the Bard to automatically re-cast Selo's Sonata AA as long as its not on the bard themselves. If set to enabled, we recommend using Shauri's Sonorious Clouding AA for travel as Selo's Sonata will overwrite Travel song and cause the loss of invisibility.
+Auto-Sonata allows the Bard to automatically re-cast Selo's Sonata AA as long as its not on the bard themselves.
+
+### MaxAggro Parameter
+This parameter allows the user to specify when to stop using an ability or spell based on their current agro amount.
+
+### Group Buff Breakpoints
+This functionality allows the user to specify different buffs to cast on "beggers" depending on the begger's current level. For example, if set up correctly, a Cleric will no longer try to cast Conviction on a level 1 character.
 
 ## Credits
 Thanks to Vraquil and Kreegoth from the Imperfekt_EQ server for keeping this repository up to date and implementing new functionality.

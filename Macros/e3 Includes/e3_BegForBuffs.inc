@@ -142,6 +142,9 @@ SUB event_Chat(ChatChannel, ChatSender, ChatText)
 |--------------------------------------------------------|
 #event buffRequestRelay "#1# tells you, 'Buff #*#"
 SUB event_buffRequestRelay(line, ChatSender, eventParams)
+  /declare chatSenderLevel int local 70
+
+  /if (${Debug} || ${Debug_BegForBuffs}) /echo |- event_buffRequestRelay ==>
 /if (${Debug} || ${Debug_BegForBuffs}) /echo |- event_buffRequestRelay ==>
   /if (!${NetBots[${ChatSender}].ID}) {
     /if (!${allow_BuffRequests}) {
@@ -165,9 +168,10 @@ SUB event_buffRequestRelay(line, ChatSender, eventParams)
   }
   | -------------------Find buffTarget------------------- |
   /declare buffTarget string local ${line.Right[-${Math.Calc[${line.Find[buff]}+4]}].Left[-1]}
+  /varset buffTarget ${buffTarget.Replace[please,]}
   /if (${Int[${buffTarget}]}) {
     /varset buffTarget ${Spawn[id ${buffTarget}].ID}
-  } else /if (${buffTarget.Equal[me]}) {
+  } else /if (${buffTarget.Equal[me]} || ${buffTarget.Equal[ me]} || ${buffTarget.Equal[me ]}) {
     /varset buffTarget ${Spawn[pc =${ChatSender}].ID}
   } else /if (${buffTarget.Find['s pet]}) {
     /varset buffTarget ${Spawn[pc =${buffTarget.Left[-6]}].Pet.ID}
@@ -179,17 +183,19 @@ SUB event_buffRequestRelay(line, ChatSender, eventParams)
     /varset buffTarget ${Spawn[=${buffTarget}].ID}
   }
 
-  /if (${Defined[GroupBuffs2D]} && ${Bool[${buffTarget}]}) {
-    /tell ${ChatSender} Casting buffs on ${Spawn[id ${buffTarget}].CleanName}...
-    /bc Buff ${buffTarget}
-  | If I don't have buffs, but others might.
-  } else /if (!${Defined[GroupBuffs2D]}) {
-    /if (${NetBots.Counts}>1) {
-      /tell ${ChatSender} Requesting buffs on ${Spawn[id ${buffTarget}].CleanName}...
-      /bc Buff ${buffTarget}
-  | If I'm not a buffer, and no other bots are on.
-    } else  {
-      /tell ${ChatSender} Sorry, my ini are not set up to cast group buffs
+   /if (${Bool[${Spawn[${buffTarget}]}]}) {
+    /varset chatSenderLevel ${Spawn[${buffTarget}].Level}
+    /echo buffreq level ${chatSenderLevel}
+
+    /if (${chatSenderLevel}<47) {
+        /tell ${ChatSender} Casting Level < 47 buffs on ${Spawn[id ${buffTarget}].CleanName}...
+        /bc L1 Buff ${buffTarget}
+    } else /if (${chatSenderLevel}<62) {
+        /tell ${ChatSender} Casting Level < 62 buffs on ${Spawn[id ${buffTarget}].CleanName}...
+        /bc L47 Buff ${buffTarget}
+    } else {
+        /tell ${ChatSender} Casting buffs on ${Spawn[id ${buffTarget}].CleanName}...
+        /bc Buff ${buffTarget}
     }
   }
 /if (${Debug} || ${Debug_BegForBuffs}) /echo <== event_buffRequestRelay -|
