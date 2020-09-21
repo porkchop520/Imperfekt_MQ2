@@ -221,7 +221,7 @@ sub check_bard_mez
 
 | Automatically cast Selo's Sonata whenever the buff is missing on the Bard
 SUB autoSonata
-  /if (${autoSonataOn} && !${Me.Buff[Selo's Sonata].ID} && ${Me.AltAbilityReady[Selo's Sonata]}) {
+  /if (${autoSonataOn} && !${Me.Buff[Selo's Sonata].ID} && !${Me.Invis} && ${Me.AltAbilityReady[Selo's Sonata]}) {
     /alt act 3704
   }
 /RETURN
