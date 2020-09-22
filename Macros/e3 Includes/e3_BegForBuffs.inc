@@ -90,6 +90,11 @@ SUB event_Chat(ChatChannel, ChatSender, ChatText)
       }
       /return
     }
+    | Check if caster is invisible
+    / if (${Me.Invis}) {
+      /tell ${ChatSender} I'm sorry, I'm invisible and cannot cast buffs right now.
+      /return
+    }
     :retryCast
     | Check Mana
     /echo cs ${ChatSender} csID ${Spawn[pc =${ChatSender}].ID} spell ${begBuffArray2D[1,${iSpellName}]}
@@ -164,6 +169,11 @@ SUB event_buffRequestRelay(line, ChatSender, eventParams)
   | Check range.
   /if (${Spawn[pc ${ChatSender}].Distance} > 200) {
     /tell ${ChatSender} You're out of range!
+    /return
+  }
+  | Check if caster is invisible
+  / if (${Me.Invis}) {
+    /tell ${ChatSender} I'm sorry, I'm invisible and cannot cast buffs right now.
     /return
   }
   | -------------------Find buffTarget------------------- |
