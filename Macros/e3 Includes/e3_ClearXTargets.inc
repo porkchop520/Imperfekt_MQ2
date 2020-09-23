@@ -2,7 +2,7 @@
 | Clear XTargets
 |
 | Author: Sirhopsalot
-| Contributor: Forsy
+| Contributors: Forsy, Kreegoth
 |
 | Starts assist on each of the targets in your XTarget list until they're all Cleared using the criteria below
 | This will cause the toon to stick to the current target, face the mob if looking the wrong way, and re-stick if the mob is too far away

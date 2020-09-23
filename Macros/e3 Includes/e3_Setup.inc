@@ -9,6 +9,7 @@
 #include e3 Includes\e3_BuffCheck.inc
 #include e3 Includes\e3_Buy.inc
 #include e3 Includes\e3_Casting.inc
+#include e3 Includes\e3_ClearXTargets.inc
 #include e3 Includes\e3_Combine.inc
 #include e3 Includes\e3_CorpseSummoning.inc
 #include e3 Includes\e3_Cures.inc
