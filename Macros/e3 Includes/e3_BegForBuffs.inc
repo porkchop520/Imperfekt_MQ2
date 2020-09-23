@@ -49,6 +49,15 @@ SUB event_Chat(ChatChannel, ChatSender, ChatText)
         /return
       }
     }
+    | Check if caster is invisible
+    /if (${Me.Invis}) {
+      /if (${ChatChannel.Equal[TELL]}) {
+        /tell ${ChatSender} I'm sorry, I'm invisible and cannot cast buffs right now.
+      } else {
+        /g I'm sorry, I'm invisible and cannot cast buffs right now.
+      }
+      /return
+    }
     | Check zone
     /if (!${SpawnCount[pc ${ChatSender}]}) {
       /if (${ChatChannel.Equal[TELL]}) /tell ${ChatSender} We're not in the same zone!
@@ -88,11 +97,6 @@ SUB event_Chat(ChatChannel, ChatSender, ChatText)
       } else {
         /g You're out of range!
       }
-      /return
-    }
-    | Check if caster is invisible
-    / if (${Me.Invis}) {
-      /tell ${ChatSender} I'm sorry, I'm invisible and cannot cast buffs right now.
       /return
     }
     :retryCast
@@ -172,8 +176,12 @@ SUB event_buffRequestRelay(line, ChatSender, eventParams)
     /return
   }
   | Check if caster is invisible
-  / if (${Me.Invis}) {
-    /tell ${ChatSender} I'm sorry, I'm invisible and cannot cast buffs right now.
+  /if (${Me.Invis}) {
+    /if (${ChatChannel.Equal[TELL]}) {
+      /tell ${ChatSender} I'm sorry, I'm invisible and cannot cast buffs right now.
+    } else {
+      /g I'm sorry, I'm invisible and cannot cast buffs right now.
+    }
     /return
   }
   | -------------------Find buffTarget------------------- |
