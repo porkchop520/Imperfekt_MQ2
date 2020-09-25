@@ -854,15 +854,15 @@ SUB EVENT_FindSlot(line, ChatSender, SlotToFind)
   /if (${Select[${c_eventArgData},charm,leftear,head,face,rightear,neck,shoulder,arms,back,leftwrist,rightwrist,ranged,hands,mainhand,offhand,leftfinger,rightfinger,chest,legs,feet,waist,powersource,ammo, fingers, wrists, ears]}) {
 
      /if (${c_eventArgData.Equal[fingers]}) {
-        /say Finger Slots --- leftfinger : ${LinkDB[${InvSlot[leftfinger].Item}]} rightfinger: ${LinkDB[${InvSlot[rightfinger].Item}]}
+        /gsay Finger Slots --- leftfinger : ${LinkDB[${InvSlot[leftfinger].Item}]} rightfinger: ${LinkDB[${InvSlot[rightfinger].Item}]}
      } else /if (${c_eventArgData.Equal[wrists]}) {
-        /say Wrist Slots --- leftwrist: ${LinkDB[${InvSlot[leftwrist].Item}]} rightfinger: ${LinkDB[${InvSlot[rightwrist].Item}]}
+        /gsay Wrist Slots --- leftwrist: ${LinkDB[${InvSlot[leftwrist].Item}]} rightfinger: ${LinkDB[${InvSlot[rightwrist].Item}]}
      } else /if (${c_eventArgData.Equal[ears]}) {
-        /say Ear Slots --- leftear: ${LinkDB[${InvSlot[leftear].Item}]} rightear : ${LinkDB[${InvSlot[rightear].Item}]}
+        /gsay Ear Slots --- leftear: ${LinkDB[${InvSlot[leftear].Item}]} rightear : ${LinkDB[${InvSlot[rightear].Item}]}
      } else /if (!${InvSlot[${c_eventArgData}].Item.ID}) {
-        /say ${c_eventArgData}: No Item Equipped
+        /gsay ${c_eventArgData}: No Item Equipped
      } else {
-        /say ${c_eventArgData}: ${LinkDB[${InvSlot[${c_eventArgData}].Item}]}
+        /gsay ${c_eventArgData}: ${LinkDB[${InvSlot[${c_eventArgData}].Item}]}
      }
 
   } else {
