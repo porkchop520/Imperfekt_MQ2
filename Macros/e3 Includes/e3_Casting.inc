@@ -296,10 +296,10 @@ Sub e3_Cast(int targetID, ArrayName, int ArrayIndex)
 		} else /if (${castReturn.Equal[CAST_IMMUNE]}) {
       /docommand ${ChatToggle} ${Target.Name} is immune to ${pendingCast} **
 			/varset immuneList ${immuneList}${pendingCastID}_${castTargetName},
-		}else /if (${castReturn.Equal[CAST_TAKEHOLD]} && ${Me.Class.ShortName.Equal[WIZ]}) {
-		/if (${Target.ID}==${targetID}) {
-				/docommand ${ChatToggle} ** Casting Anyways as I am WIZ **
-			}	
+		} else /if (${Me.Class.ShortName.Equal[WIZ]}) {
+      /if (${Target.ID}==${targetID}) {
+				/varset lastSuccessfulCast ${pendingCast}
+			}
     |dont create a nohold timer for detrimental AE spells
 		} else /if (${castReturn.Equal[CAST_TAKEHOLD]} && ${Select[${ArrayName},TargetAE_Spells2D,PBAE_Spells2D]}==0) {
       /if (${Target.ID}==${targetID}) {
