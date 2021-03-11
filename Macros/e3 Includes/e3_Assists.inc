@@ -1438,7 +1438,7 @@ SUB assist_CharacterSettings
     }
 	}
 	| If I'm a casting class, add Debuff entries.
-	/if (${Select[${Me.Class.ShortName},BST,DRU,ENC,MAG,NEC,SHM,RNG]}) {
+	/if (${Select[${Me.Class.ShortName},BST,DRU,ENC,MAG,NEC,SHM,RNG,WIZ]}) {
 		/if (!${Ini[${Character_Ini},Debuffs].Length}) {
 			/call WriteToIni "${Character_Ini},Debuffs,Debuff on Assist"
 			/call WriteToIni "${Character_Ini},Debuffs,Debuff on Command"
